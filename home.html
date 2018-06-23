@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <title>SuperBingo - Inicio</title>
+
+
+</head>
+
+<body id="home">
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper">
+            <div class="row">
+                <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+                    <div class="card col-lg-4 mx-auto">
+                        <div class="card-body px-5 py-5">
+                            <div class="text-center">
+                                <h3>Menu principal</h3>
+                            </div>
+                            <form ng-app="MyApp" ng-controller="Home">
+                                <div id="log"> </div>
+                                <div class="text-center">                                    
+                                    <button ng-click="ButtonClick()" type="button" class="btn gradient-GreenViolet btn-block enter-btn">SALA DE JUEGOS</button>
+                                    <button ng-click="ButtonClick()" type="button" class="btn gradient-GreenViolet btn-block enter-btn">MODULO ESTADÍSTICO</button>
+                                    <button ng-click="ButtonRedirect()" type="button" class="btn gradient-BlueGreen btn-block enter-btn">CERRAR SESIÓN</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+    <!-- CSS Style -->
+<link rel="stylesheet" href="css/materialdesignicons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/mdb.min.css">
+<link rel="stylesheet" href="css/custom.css">
+
+<!-- Plugin CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<style>
+    input[type="date"]:before {
+        content: attr(placeholder) !important;
+        color: #aaa;
+        margin-right: 0.5em;
+    }
+
+    input[type="date"]:focus:before,
+    input[type="date"]:valid:before {
+        content: "";
+    }
+</style>
+
+<!-- Utils & Data -->
+<script src="js/utilJS.js"></script>
+<script src="js/servicesJS.js"></script>
+
+<!-- Plugin JS -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/mdb.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+
+<script>
+
+
+    var $log = $("#log"), str = " <h3>Bienvenido: " + $.cookie("usuario") + "</h3>", html = $.parseHTML(str), nodeNames = [];
+
+        // Append the parsed HTML
+        $log.append( html );
+
+
+       $(document).ready(function () {
+
+           console.log($.cookie("session"));
+
+            if ($.cookie("session") == 'false')
+            {
+                location.href = getAbsolutePath() + "/login.html";
+
+            };
+
+
+
+        });
+
+
+        var app = angular.module('MyApp', []);
+
+        app.controller('Home', function ($scope, $http, $window) {
+
+            // Metodo Redirect
+            $scope.ButtonClick = function () {
+                //var cookieValue = $.cookie("session");
+                //toastr.error(cookieValue);
+                $window.location.href = "Sala.aspx";
+            }
+
+            // Metodo Redirect
+            $scope.ButtonRedirect = function () {
+                    $window.location.href = getAbsolutePath() + "/login.html";
+                }
+
+        });
+
+
+</script>
+

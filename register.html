@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <title>SuperBingo - Registro</title>
+
+    <!-- CSS Style -->
+    <link rel="stylesheet" href="css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mdb.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+    <style>
+        input[type="date"]:before {
+            content: attr(placeholder) !important;
+            color: #aaa;
+            margin-right: 0.5em;
+        }
+
+        input[type="date"]:focus:before,
+        input[type="date"]:valid:before {
+            content: "";
+        }
+    </style>
+
+
+</head>
+
+<body id="login">
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper">
+            <div class="row">
+                <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+                    <div class="card col-lg-4 mx-auto">
+                        <div class="card-body px-5 py-5">
+                            <div class="text-center">
+                                <h3>Registro</h3>
+                            </div>
+                            <form ng-app="MyApp" ng-controller="Register">
+
+                                <div class="md-form">
+                                    <input ng-model="username" autocomplete="off" type="text" id="username" class="form-control">
+                                    <label for="username">👨‍💻 Nombre de Usuario *</label>
+                                </div>
+                                <div class="md-form">
+                                    <input ng-model="password" type="password" id="password" class="form-control">
+                                    <label for="password">🔑 Contraseña *</label>
+                                </div>
+                                <div class="md-form">
+                                    <input ng-model="correo" autocomplete="off" type="text" id="correo" class="form-control">
+                                    <label for="correo">📧 Correo *</label>
+                                </div>
+                                <div class="md-form">
+                                    <select ng-model="pais" id="pais" class="form-control">
+                                        <option value="" selected>Seleccione un Pais</option>
+                                        <option value="Argentina">🇦🇷 Argentina</option>
+                                        <option value="Chile">🇨🇱 Chile</option>
+                                        <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
+                                        <option value="Japon">🇯🇵 Japón</option>
+                                    </select>
+                                </div>
+                                <div class="md-form">
+                                    <select ng-model="genero" id="genero" class="form-control">
+                                        <option value="" selected>Seleccione un Genero</option>
+                                        <option value="M">👨 Masculino</option>
+                                        <option value="F">👩 Femenino</option>
+                                        <option value="N">❓ Otro</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="md-form">
+                                    <input ng-model="fecha" placeholder="🎂 Fecha Nacimiento" type="date" id="fecha" class="form-control">
+                                </div>
+
+                                <div class="text-center">
+                                    <button ng-click="ButtonClick()" type="button" class="btn gradient-GreenViolet btn-block enter-btn">ENVIAR</button>
+                                    <button ng-click="ButtonRedirect()" type="button" class="btn gradient-BlueGreen btn-block enter-btn">VOLVER</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Utils & Data -->
+    <script src="js/utilJS.js"></script>
+    <script src="js/servicesJS.js"></script>
+
+    <!-- Plugin JS -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/mdb.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+    <script>
+
+        var app = angular.module('MyApp', []);
+
+        app.controller('Register', function ($scope, $http, $window) {
+
+            // Metodo Redirect
+            $scope.ButtonClick = function () {
+
+                if (validarForm()) {
+
+                    console.log($scope);
+
+                    var datos = {"perfil":"1", "username": $scope.username, "password": $scope.password, "correo": $scope.correo, "pais": $scope.pais, "fechanacimiento": $("#fecha").val(), "sexo": $scope.genero };
+                    var request = $.get(service_azure_register, datos);
+
+                    // Si el request está OK
+                    request.done(function (response) {
+
+                        if (response.d.status) {
+                            toastr.success(response.d.message);
+                            wait(2000);
+                            $scope.ButtonRedirect();
+                        } else {
+                            toastr.error(response.d.message);
+                        }
+                    });
+
+                    // Si falla el Request
+                    request.fail(function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("Error al conectar al servidor");
+                    });
+                }
+            }
+
+            // Metodo Redirect
+            $scope.ButtonRedirect = function () {
+                    $window.location.href = getAbsolutePath() + "/index.html";
+                }
+
+            // Metodo Validar
+            function validarForm() {
+
+                var username = $("#username").val();
+                var password = $("#password").val();
+                var correo = $("#correo").val();
+                var pais = $("#pais").val();
+                var genero = $("#genero").val();
+                var fecha = $("#fecha").val();
+
+                //alert(fecha);
+
+                if (username === "" || username === null || username.length < 1) {
+                    toastr.info('Debe ingresar usuario');
+                    return false;
+                }
+
+                if (password === "" || password === null || password.length < 1) {
+                    toastr.info('Debe ingresar contraseña');
+                    return false;
+                }
+
+                if (correo === "" || correo === null || correo.length < 1) {
+                    toastr.info('Debe ingresar correo');
+                    return false;
+                }
+
+                if (!correo.includes('@')) {
+                    toastr.info('Correo no valido');
+                    return false;
+                }
+
+                if (!correo.substring(correo.length - 4, correo.length).includes('.')) {
+                    toastr.info('Correo no valido');
+                    return false;
+                }
+
+                if (pais === "" || pais === null || pais.length < 1) {
+                    toastr.info('Debe ingresar pais');
+                    return false;
+                }
+
+                if (genero === "" || genero === null || genero.length < 1) {
+                    toastr.info('Debe ingresar genero');
+                    return false;
+                }
+
+                if (fecha === "" || fecha === null || fecha.length < 1) {
+                    toastr.info('Debe ingresar fecha');
+                    return false;
+                }
+
+                return true;
+            }
+
+        });
+    </script>
+</body>
+
+</html>
